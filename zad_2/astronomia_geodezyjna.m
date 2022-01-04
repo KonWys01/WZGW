@@ -8,16 +8,16 @@ disp(rekt)
 disp(dek)
 
 % Sztokholm
-phi = 59.3325800;
-lambda = 18.0649000;
+% phi = 59.3325800;
+% lambda = 18.0649000;
 
 % % Mogadiszu - Stolica Somalii
 % phi = 2.0371100;
 % lambda = 45.3437500; 
 
 % % Hobart - Stolica Tasmanii
-% phi = -42.8793600;
-% lambda = 147.3294100;
+phi = -42.8793600;
+lambda = 147.3294100;
 
 h = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]';
 disp(h)
@@ -47,26 +47,19 @@ x = 1.*sind(z).*cosd(A);
 y = 1.*sind(z).*sind(A);
 z = 1.*cosd(z);
 
+% Rysowanie półkuli 
+[X,Y,Z] = sphere(16);
+X = X(9:end,:);
+Y = Y(9:end,:);
+Z = Z(9:end,:);
+surf(X,Y,Z,'FaceColor','black','FaceAlpha',0.3)
+axis equal, hold on;
+% Rysowanie gwiazdy
+scatter3(x,y,z, 160, 'yellow', '*')
 
 
-
-
-
-
-
-
-
-
-
-% d = datetime('now');
-% d = datetime(2016, 07, 30);
-% jd = juliandate(d);
-% disp(jd)
-% disp(datetime(jd,'ConvertFrom','juliandate'))
-% katgodz(2021, 10, 10, 10, 10, 10)
 function [t] = katgodz(y, d, m, h, lambda, alfa)
     jd = juliandate(datetime(y, m, d)); % dni
-%     disp('jd=')
     g = GMST(jd); % stopnie
     UT1 = h * 1.002737909350795; % godziny
 
