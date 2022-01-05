@@ -4,27 +4,23 @@ clear;
 % gwiazdy Shaula z gwiazdozbioru Skorpiona
 rekt = 17 + 35/60 + 3.4/3600; 
 dek = -(37 + 7/60 + 4.8/3600);
-disp(rekt)
-disp(dek)
 
 % Sztokholm
-% phi = 59.3325800;
-% lambda = 18.0649000;
+phi = 59.3325800;
+lambda = 18.0649000;
 
 % % Mogadiszu - Stolica Somalii
 % phi = 2.0371100;
 % lambda = 45.3437500; 
 
 % % Hobart - Stolica Tasmanii
-phi = -42.8793600;
-lambda = 147.3294100;
+% phi = -42.8793600;
+% lambda = 147.3294100;
 
-h = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]';
-disp(h)
+h = [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]';
 
 % Kąt dla kolejnych godzin
-hour_angle = katgodz(2022, 01, 04, h, lambda, rekt);
-disp(hour_angle)
+hour_angle = katgodz(2022, 01, 4, h, lambda, rekt);
 
 % Poprawa kąta
 hour_size = size(hour_angle, 1);
@@ -35,7 +31,7 @@ for i = 1:hour_size
 end
 
 % odleglosc zenitalna
-cos_z = sind(phi).*sind(dek) + cosd(phi).*cosd(hour_angle);
+cos_z = sind(phi).*sind(dek) + cosd(phi).*cosd(dek).*cosd(hour_angle);
 z = acosd(cos_z);
 
 % Azymut gwiazdy
@@ -58,7 +54,7 @@ axis equal, hold on;
 scatter3(x,y,z, 160, 'yellow', '*')
 
 
-function [t] = katgodz(y, d, m, h, lambda, alfa)
+function [t] = katgodz(y, m, d, h, lambda, alfa)
     jd = juliandate(datetime(y, m, d)); % dni
     g = GMST(jd); % stopnie
     UT1 = h * 1.002737909350795; % godziny
@@ -71,9 +67,6 @@ end
 
 function g = GMST(jd)
     T = (jd - 2451545) / 36525;
-    g = 280.4606837 + 360.98564736629 * (jd - 2451545.0) + 0.00387933*T.^2 - T.^3/3870000;
+    g = 280.46061837 + 360.98564736629  * (jd - 2451545.0) + 0.000387933*T.^2 - T.^3/38710000;
     g = mod(g, 360);
 end
-
-
-
