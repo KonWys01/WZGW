@@ -35,13 +35,21 @@ cos_z = sind(phi).*sind(dek) + cosd(phi).*cosd(dek).*cosd(hour_angle);
 z = acosd(cos_z);
 
 % Azymut gwiazdy
-tg_A = (-cosd(dek).*sind(hour_angle))./(cosd(phi).*sind(dek) - sind(phi).*cosd(dek).*cosd(hour_angle));
-A = atand(tg_A);
+nominator = -cosd(dek).*sind(hour_angle);
+denominator = cosd(phi).*sind(dek) - sind(phi).*cosd(dek).*cosd(hour_angle);
+A = atan2d(nominator, denominator);
+for i=1:length(A)
+   if A(i) < 0 
+       A(i) = A(i) + 360; 
+   elseif A(i) > 360
+       A(i) = A(i) - 360;
+   end
+end 
 
 % transformacja współrzednych
-x = 1.*sind(z).*cosd(A);
-y = 1.*sind(z).*sind(A);
-z = 1.*cosd(z);
+x = 1.4.*sind(z).*cosd(A);
+y = 1.4.*sind(z).*sind(A);
+z = 1.4.*cosd(z);
 
 % Rysowanie półkuli 
 [X,Y,Z] = sphere(16);
