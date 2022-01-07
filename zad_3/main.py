@@ -37,14 +37,6 @@ def vincent(A, B):
         C = (f / 16)*cos2_a*(4 + f*(4-3*cos2_a))
         L_iterated = delta_lambda + (1 - C)*f*sin_a*(sigma + C*sin_sigma*(cos2_sigma_m+C*cos_sigma*(1-2*(cos2_sigma_m**2))))
 
-        # print(sin_sigma)
-        # print(cos_sigma)
-        # print(sigma)
-        # print(sin_a)
-        # print(cos2_a)
-        # print(cos2_sigma_m)
-        # print(C)
-        # print(L_iterated)
         # break
         if np.fabs(math.radians(L_iterated - L)) < (0.000001 / 3600):
             break
@@ -59,10 +51,31 @@ def vincent(A, B):
                                                        - 1/6*B*cos2_sigma_m*(-3 + 4*(sin_sigma**2))*(-3+4*(cos2_sigma_m**2))))
 
     s_AB = b*A*(sigma - delta_sigma)
-    A_ab = np.arctan((np.cos(Ub)*np.sin(L))/(np.cos(Ua)*np.sin(Ub) - np.sin(Ua)*np.cos(Ub)*np.cos(L)))
-    A_ba = np.arctan((np.cos(Ua)*np.sin(L))/(-np.sin(Ua)*np.cos(Ub) + np.cos(Ua)*np.sin(Ub)*np.cos(L))) + np.pi
 
-    print("A_ab, a_ba", A_ab, A_ba)
+    """poprawka azymutu"""
+    nominator_A_ab = np.cos(Ub)*np.sin(L)
+    denominator_A_ab = np.cos(Ua)*np.sin(Ub) - np.sin(Ua)*np.cos(Ub)*np.cos(L)
+    A_ab = np.arctan(nominator_A_ab/denominator_A_ab)
+    if nominator_A_ab > 0 and denominator_A_ab > 0:
+        pass
+    elif nominator_A_ab > 0 and denominator_A_ab < 0:
+        A_ab = A_ab + np.pi
+    elif nominator_A_ab < 0 and denominator_A_ab < 0:
+        A_ab = A_ab + np.pi
+    elif nominator_A_ab < 0 and denominator_A_ab > 0:
+        A_ab = A_ab + 2*np.pi
+
+    nominator_A_ba = np.cos(Ua)*np.sin(L)
+    denominator_A_ba = -np.sin(Ua)*np.cos(Ub) + np.cos(Ua)*np.sin(Ub)*np.cos(L)
+    A_ba = np.arctan(nominator_A_ba/denominator_A_ba)
+    if nominator_A_ba > 0 and denominator_A_ba > 0:
+        pass
+    elif nominator_A_ba > 0 and denominator_A_ba < 0:
+        A_ba = A_ba + 2*np.pi
+    elif nominator_A_ba < 0 and denominator_A_ba < 0:
+        A_ba = A_ba + 2*np.pi
+    elif nominator_A_ba < 0 and denominator_A_ba > 0:
+        A_ba = A_ba + 3*np.pi
     return s_AB, math.degrees(A_ab), math.degrees(A_ba)
 
 # def kivioji(fi, lam, A, s):
@@ -97,7 +110,7 @@ def real_degrees(degrees):
     return f'{deg}°{minutes}\'{int_sec}{float_seconds}"'
 
 
-# print(f"punkt średniej szerokości phi={(A[0]+C[0])/2}, lambda={(A[1]+B[1])/2}")
-print(f"Vincent {vincent(A, D)}")
+print(f"punkt średniej szerokości phi={real_degrees((A[0]+D[0])/2)}, lambda={real_degrees((A[1]+D[1])/2)}")
+print(f"Azymut AD: {real_degrees(vincent(A, D)[1])} ----- Azymut DA: {real_degrees(vincent(A, D)[2])}")
 print()
 print(real_degrees(1.1233245434))
