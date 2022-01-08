@@ -83,14 +83,13 @@ def vincent(A, B):
 def kivioji():
     # link do algorytmu: https://docer.pl/doc/x0e0vv1
 
-    ds = 1030
     s_AB, A_ab = vincent(A, D)[:2]
     s_AB = s_AB / 2
-    n = int(s_AB / ds)
-
+    n = int(s_AB / 1000)
+    ds = s_AB / n  # podzielenie na równe odcinki zamiast dzielic na odcinki 1000m i ostatni inny
     Phi_A, Lambda_A = [math.radians(i) for i in A]
     A_ab = math.radians(A_ab)
-    for i in range(n+1):
+    for i in range(n):
         M = a*(1-e2)/(np.sqrt((1-e2*np.sin(Phi_A)**2)**3))
         N = a / (np.sqrt(1-e2*(np.sin(Phi_A)**2)))
 
@@ -127,7 +126,12 @@ def real_degrees(degrees):
     return f'{deg}°{minutes}\'{int_sec}{float_seconds}"'
 
 
+def azymuty_pomiedzy_punktami():
+    Azymut, odwrotny = vincent(kivioji()[:2], Mean)[1:]
+    return Azymut - math.degrees(np.pi), odwrotny - math.degrees(np.pi)
+
 print(f"punkt średniej szerokości phi={real_degrees((A[0]+D[0])/2)}, lambda={real_degrees((A[1]+D[1])/2)}")
 print(f"Azymut AD: {real_degrees(vincent(A, D)[1])} ----- Azymut DA: {real_degrees(vincent(A, D)[2])}")
 print(f"srodkowy punkt-> Phi:{real_degrees(kivioji()[0])}    lambda:{real_degrees(kivioji()[1])}    Azymut:{real_degrees(kivioji()[2])}")
 print(f"Odleglosc miedzy punktem średniej szerokości, a środkowym: {round(vincent(Mean, kivioji())[0], 3)}m")
+print(f"{azymuty_pomiedzy_punktami()}")
