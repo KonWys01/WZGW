@@ -130,8 +130,22 @@ def azymuty_pomiedzy_punktami():
     Azymut, odwrotny = vincent(kivioji()[:2], Mean)[1:]
     return Azymut - math.degrees(np.pi), odwrotny - math.degrees(np.pi)
 
+
+def surface_area(A, B):
+    A = [math.radians(i) for i in A]
+    B = [math.radians(i) for i in B]
+    e = np.sqrt(e2)
+    Phi_A = np.sin(A[0])/(1 - e2*(np.sin(A[0])**2)) + np.log((1+e*np.sin(A[0]))/(1-e*np.sin(A[0])))/(2*e)
+    Phi_B = np.sin(B[0])/(1 - e2*(np.sin(B[0])**2)) + np.log((1+e*np.sin(B[0]))/(1-e*np.sin(B[0])))/(2*e)
+
+    b2 = (a * np.sqrt(1 - e2))**2
+    area = b2*(B[1] - A[1])/2*(Phi_A - Phi_B)
+    return round(area, 6)
+
+
 print(f"punkt średniej szerokości phi={real_degrees((A[0]+D[0])/2)}, lambda={real_degrees((A[1]+D[1])/2)}")
 print(f"Azymut AD: {real_degrees(vincent(A, D)[1])} ----- Azymut DA: {real_degrees(vincent(A, D)[2])}")
 print(f"srodkowy punkt-> Phi:{real_degrees(kivioji()[0])}    lambda:{real_degrees(kivioji()[1])}    Azymut:{real_degrees(kivioji()[2])}")
 print(f"Odleglosc miedzy punktem średniej szerokości, a środkowym: {round(vincent(Mean, kivioji())[0], 3)}m")
-print(f"{azymuty_pomiedzy_punktami()}")
+print(f"Azumyt pierwotny: {real_degrees(azymuty_pomiedzy_punktami()[0])} Azymut odwrotny:{real_degrees(azymuty_pomiedzy_punktami()[1])}")
+print(f"Pole powierzchni czworokąta: {surface_area(A, D)}m^2")
