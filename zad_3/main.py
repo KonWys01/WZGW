@@ -13,6 +13,7 @@ A = [50 + 15/60, 20 + 45/60]
 B = [50, 20 + 45/60]
 C = [50 + 15/60, 21 + 15/60]
 D = [50, 21 + 15/60]
+Mean = [50.125, 21]
 
 
 def vincent(A, B):
@@ -78,23 +79,39 @@ def vincent(A, B):
         A_ba = A_ba + 3*np.pi
     return s_AB, math.degrees(A_ab), math.degrees(A_ba)
 
-# def kivioji(fi, lam, A, s):
-#     fi = np.deg2rad(fi)
-#     A = np.deg2rad(A)
-#     lam = np.deg2rad(lam)
-#
-#     ds = 1.2
-#     n = s // ds
-#
-#     M = (A * (1-e2))/(np.sqrt((1-e2*(np.sin(fi)**2)))**3)
-#     N = a / np.sqrt(1 - e2*(np.sin(fi)**2))
-#     przyrost_fi = (ds * np.cos(A)) / M
-#     przyrost_azymut = np.sin(A)*np.tan(lam)*ds / N
-#
-#     srednia_szerokosc_geodezyjna = fi + przyrost_fi
-#     sredni_azymut = A + przyrost_azymut
-#
-#     przyrost_fi_2 = ds * np.cos(sredni_azymut) /
+
+def kivioji():
+    # link do algorytmu: https://docer.pl/doc/x0e0vv1
+
+    ds = 1030
+    s_AB, A_ab = vincent(A, D)[:2]
+    s_AB = s_AB / 2
+    n = int(s_AB / ds)
+
+    Phi_A, Lambda_A = [math.radians(i) for i in A]
+    A_ab = math.radians(A_ab)
+    for i in range(n+1):
+        M = a*(1-e2)/(np.sqrt((1-e2*np.sin(Phi_A)**2)**3))
+        N = a / (np.sqrt(1-e2*(np.sin(Phi_A)**2)))
+
+        Phi_przyrost = ds * np.cos(A_ab) / M
+        Az_przyrost = ds * np.sin(A_ab) * np.tan(Phi_A) / N
+
+        mid_phi = Phi_A + 1/2*Phi_przyrost
+        mid_az = A_ab + 1/2*Az_przyrost
+
+        M = a*(1-e2)/(np.sqrt((1-e2*np.sin(mid_phi)**2)**3))
+        N = a / (np.sqrt(1 - e2 * (np.sin(mid_phi) ** 2)))
+
+        Phi_przyrost = ds*np.cos(mid_az)/M
+        Lambda_przyrost = ds*np.sin(mid_az)/(N*np.cos(mid_phi))
+        Az_przyrost = np.sin(mid_az)*np.tan(mid_phi)*ds/N
+
+        Phi_A = Phi_A + Phi_przyrost
+        Lambda_A = Lambda_A + Lambda_przyrost
+        A_ab = A_ab + Az_przyrost
+
+    return math.degrees(Phi_A), math.degrees(Lambda_A), math.degrees(A_ab)
 
 
 def real_degrees(degrees):
@@ -112,5 +129,5 @@ def real_degrees(degrees):
 
 print(f"punkt średniej szerokości phi={real_degrees((A[0]+D[0])/2)}, lambda={real_degrees((A[1]+D[1])/2)}")
 print(f"Azymut AD: {real_degrees(vincent(A, D)[1])} ----- Azymut DA: {real_degrees(vincent(A, D)[2])}")
-print()
-print(real_degrees(1.1233245434))
+print(f"srodkowy punkt-> Phi:{real_degrees(kivioji()[0])}    lambda:{real_degrees(kivioji()[1])}    Azymut:{real_degrees(kivioji()[2])}")
+print(f"Odleglosc miedzy punktem średniej szerokości, a środkowym: {round(vincent(Mean, kivioji())[0], 3)}m")
