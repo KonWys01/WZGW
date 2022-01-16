@@ -16,7 +16,7 @@ lambda = 18.0649000;
 % % Hobart - Stolica Tasmanii
 % phi = -42.8793600;
 % lambda = 147.3294100;
-
+        
 h = [0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24]';
 
 % Kąt dla kolejnych godzin
@@ -60,6 +60,12 @@ surf(X,Y,Z,'FaceColor','black','FaceAlpha',0.3)
 axis equal, hold on;
 % Rysowanie gwiazdy
 scatter3(x,y,z, 160, 'yellow', '*')
+
+% wysokosc od czasu
+plot(h, 90-z)
+
+% zenit od czasu
+plot(h,z)
 
 
 function [t] = katgodz(y, m, d, h, lambda, alfa)
