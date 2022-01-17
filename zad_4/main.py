@@ -69,5 +69,50 @@ def GK_to_1992(A, l0=19):  # domyslne 19 dla 92
     return x_92, y_92, x, y
 
 
+def GK_to_2000(A):
+    lam = A[1]
+    # południk z lambdy
+    if lam < 16.5:
+        l0 = 15
+        strefa = 5
+    elif lam < 19.5:
+        l0 = 18
+        strefa = 6
+    elif lam < 22.5:
+        l0 = 21
+        strefa = 7
+    else:
+        l0 = 24
+        strefa = 8
+
+    A = [np.deg2rad(i) for i in A]
+    phi, lam = A
+    l0 = np.deg2rad(l0)
+    delta_lambda = lam - l0
+    t = np.tan(phi)
+    n2 = e2_prim*(np.cos(phi)**2)
+    N = a / (np.sqrt(1-e2*(np.sin(phi)**2)))
+
+    A_0 = 1 - e2/4 - (3*(e2**2))/64 - (5*(e2**3))/256
+    A_2 = 3/8 * (e2 + (e2**2)/4 + (15*(e2**3))/128)
+    A_4 = 15/256*(e2**2 + 3*(e2**3)/4)
+    A_6 = 35/3072*(e2**3)
+    sigma = a*(A_0*phi - A_2*np.sin(2*phi) + A_4*np.sin(4*phi) - A_6*np.sin(6*phi))
+    x = sigma + (delta_lambda**2)/2*N*np.sin(phi)*np.cos(phi)*\
+        (1+(delta_lambda**2)/12*(np.cos(phi)**2)*(5-t**2+9*n2+4*n2**2) +
+         (delta_lambda**4)/360*(np.cos(phi)**4)*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*(t**2)))
+
+    y = delta_lambda * N * np.cos(phi) * \
+        (1 + (delta_lambda ** 2)/6 * (np.cos(phi)**2)*(1 - t**2 + n2) +
+         (delta_lambda ** 4)/120*(np.cos(phi)**4)*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
+
+    m = 0.999923
+    x_2000 = m * x
+    y_2000 = m * y + strefa * 1000000 + 500000
+
+    return x_2000, y_2000, x, y
+
+
 print(GK_to_1992(A, 19))
 print(GK_to_1992(A))
+print(GK_to_2000(A))
