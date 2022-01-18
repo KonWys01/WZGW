@@ -1,5 +1,7 @@
 import numpy as np
 from prettytable import PrettyTable
+from shapely.geometry import Polygon
+import math
 
 # Parametry GRS80
 e2 = 0.00669438002290
@@ -197,11 +199,48 @@ def from_2000(x_2000, y_2000):
     return A
 
 
-table = PrettyTable(['Punkt', 'X_gk', 'Y_gk', 'X_1992', 'Y_1992', 'X_2000', 'Y_2000'])
-table.add_row(['A', GK(A)[0], GK(A)[1], GK_to_1992(A)[0], GK_to_1992(A)[1], GK_to_2000(A)[0], GK_to_2000(A)[1]])
-table.add_row(['B', GK(B)[0], GK(B)[1], GK_to_1992(B)[0], GK_to_1992(B)[1], GK_to_2000(B)[0], GK_to_2000(B)[1]])
-table.add_row(['C', GK(C)[0], GK(C)[1], GK_to_1992(C)[0], GK_to_1992(C)[1], GK_to_2000(C)[0], GK_to_2000(C)[1]])
-table.add_row(['D', GK(D)[0], GK(D)[1], GK_to_1992(D)[0], GK_to_1992(D)[1], GK_to_2000(D)[0], GK_to_2000(D)[1]])
-table.add_row(['Mean', GK(Mean)[0], GK(Mean)[1], GK_to_1992(Mean)[0], GK_to_1992(Mean)[1], GK_to_2000(Mean)[0], GK_to_2000(Mean)[1]])
-table.add_row(['M', GK(M)[0], GK(M)[1], GK_to_1992(M)[0], GK_to_1992(M)[1], GK_to_2000(M)[0], GK_to_2000(M)[1]])
-print(table)
+def surface_area(A, B):  # z zadania 3
+    A = [math.radians(i) for i in A]
+    B = [math.radians(i) for i in B]
+    e = np.sqrt(e2)
+    Phi_A = np.sin(A[0])/(1 - e2*(np.sin(A[0])**2)) + np.log((1+e*np.sin(A[0]))/(1-e*np.sin(A[0])))/(2*e)
+    Phi_B = np.sin(B[0])/(1 - e2*(np.sin(B[0])**2)) + np.log((1+e*np.sin(B[0]))/(1-e*np.sin(B[0])))/(2*e)
+
+    b2 = (a * np.sqrt(1 - e2))**2
+    area = b2*(B[1] - A[1])/2*(Phi_A - Phi_B)
+    return round(area, 6)
+
+
+def pola_powierchni():
+    # elipsoidalne
+    elipsoidalne = surface_area(A, D)
+
+    # GK
+    p = Polygon([GK(A), GK(B), GK(D), GK(C)])
+    # print([GK(A), GK(B), GK(C), GK(D)])
+    gauss = p.area
+
+    # 92
+    p = Polygon([GK_to_1992(A)[:2], GK_to_1992(B)[:2], GK_to_1992(D)[:2], GK_to_1992(C)[:2]])
+    pole_92 = p.area
+
+    # 2000
+    p = Polygon([GK_to_2000(A)[:2], GK_to_2000(B)[:2], GK_to_2000(D)[:2], GK_to_2000(C)[:2]])
+    pole_2000 = p.area
+
+    return elipsoidalne, gauss, pole_92, pole_2000
+
+
+wspolrzedne = PrettyTable(['Punkt', 'X_gk', 'Y_gk', 'X_1992', 'Y_1992', 'X_2000', 'Y_2000'])
+wspolrzedne.add_row(['A', GK(A)[0], GK(A)[1], GK_to_1992(A)[0], GK_to_1992(A)[1], GK_to_2000(A)[0], GK_to_2000(A)[1]])
+wspolrzedne.add_row(['B', GK(B)[0], GK(B)[1], GK_to_1992(B)[0], GK_to_1992(B)[1], GK_to_2000(B)[0], GK_to_2000(B)[1]])
+wspolrzedne.add_row(['C', GK(C)[0], GK(C)[1], GK_to_1992(C)[0], GK_to_1992(C)[1], GK_to_2000(C)[0], GK_to_2000(C)[1]])
+wspolrzedne.add_row(['D', GK(D)[0], GK(D)[1], GK_to_1992(D)[0], GK_to_1992(D)[1], GK_to_2000(D)[0], GK_to_2000(D)[1]])
+wspolrzedne.add_row(['Mean', GK(Mean)[0], GK(Mean)[1], GK_to_1992(Mean)[0], GK_to_1992(Mean)[1], GK_to_2000(Mean)[0], GK_to_2000(Mean)[1]])
+wspolrzedne.add_row(['M', GK(M)[0], GK(M)[1], GK_to_1992(M)[0], GK_to_1992(M)[1], GK_to_2000(M)[0], GK_to_2000(M)[1]])
+print(wspolrzedne)
+
+pola = PrettyTable(['Elipsoidalne', 'GK', '1992', '2000'])
+pola.add_row([f"{round(i/1000000, 12)} km^2" for i in pola_powierchni()])
+print(pola)
+
