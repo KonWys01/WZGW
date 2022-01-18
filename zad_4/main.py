@@ -1,4 +1,5 @@
 import numpy as np
+from prettytable import PrettyTable
 
 # Parametry GRS80
 e2 = 0.00669438002290
@@ -196,6 +197,11 @@ def from_2000(x_2000, y_2000):
     return A
 
 
-print(GK_to_1992(A, 19))
-print(GK_to_1992(A))
-print(GK_to_2000(A))
+table = PrettyTable(['Punkt', 'X_gk', 'Y_gk', 'X_1992', 'Y_1992', 'X_2000', 'Y_2000'])
+table.add_row(['A', GK(A)[0], GK(A)[1], GK_to_1992(A)[0], GK_to_1992(A)[1], GK_to_2000(A)[0], GK_to_2000(A)[1]])
+table.add_row(['B', GK(B)[0], GK(B)[1], GK_to_1992(B)[0], GK_to_1992(B)[1], GK_to_2000(B)[0], GK_to_2000(B)[1]])
+table.add_row(['C', GK(C)[0], GK(C)[1], GK_to_1992(C)[0], GK_to_1992(C)[1], GK_to_2000(C)[0], GK_to_2000(C)[1]])
+table.add_row(['D', GK(D)[0], GK(D)[1], GK_to_1992(D)[0], GK_to_1992(D)[1], GK_to_2000(D)[0], GK_to_2000(D)[1]])
+table.add_row(['Mean', GK(Mean)[0], GK(Mean)[1], GK_to_1992(Mean)[0], GK_to_1992(Mean)[1], GK_to_2000(Mean)[0], GK_to_2000(Mean)[1]])
+table.add_row(['M', GK(M)[0], GK(M)[1], GK_to_1992(M)[0], GK_to_1992(M)[1], GK_to_2000(M)[0], GK_to_2000(M)[1]])
+print(table)
