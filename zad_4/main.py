@@ -232,12 +232,15 @@ def pola_powierchni():
 
 
 wspolrzedne = PrettyTable(['Punkt', 'X_gk', 'Y_gk', 'X_1992', 'Y_1992', 'X_2000', 'Y_2000'])
-wspolrzedne.add_row(['A', GK(A)[0], GK(A)[1], GK_to_1992(A)[0], GK_to_1992(A)[1], GK_to_2000(A)[0], GK_to_2000(A)[1]])
-wspolrzedne.add_row(['B', GK(B)[0], GK(B)[1], GK_to_1992(B)[0], GK_to_1992(B)[1], GK_to_2000(B)[0], GK_to_2000(B)[1]])
-wspolrzedne.add_row(['C', GK(C)[0], GK(C)[1], GK_to_1992(C)[0], GK_to_1992(C)[1], GK_to_2000(C)[0], GK_to_2000(C)[1]])
-wspolrzedne.add_row(['D', GK(D)[0], GK(D)[1], GK_to_1992(D)[0], GK_to_1992(D)[1], GK_to_2000(D)[0], GK_to_2000(D)[1]])
-wspolrzedne.add_row(['Mean', GK(Mean)[0], GK(Mean)[1], GK_to_1992(Mean)[0], GK_to_1992(Mean)[1], GK_to_2000(Mean)[0], GK_to_2000(Mean)[1]])
-wspolrzedne.add_row(['M', GK(M)[0], GK(M)[1], GK_to_1992(M)[0], GK_to_1992(M)[1], GK_to_2000(M)[0], GK_to_2000(M)[1]])
+names = ['A', 'B', 'C', 'D', 'Mean', 'M']
+for index, i in enumerate([A, B, C, D, Mean, M]):
+    wspolrzedne.add_row([names[index],
+                         f"{GK(i)[0]:.3f}",
+                         f"{GK(i)[1]:.3f}",
+                         f"{GK_to_1992(i)[0]:.3f}",
+                         f"{GK_to_1992(i)[1]:.3f}",
+                         f"{GK_to_2000(i)[0]:.3f}",
+                         f"{GK_to_2000(i)[0]:.3f}"])
 print(wspolrzedne)
 
 pola = PrettyTable(['Elipsoidalne', 'GK', '1992', '2000'])
