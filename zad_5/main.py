@@ -99,8 +99,9 @@ def real_degrees(degrees):
     minutes = f"{minutes:02d}"
     int_sec = f"{int(seconds):02d}"
     float_seconds = str(round(seconds-int(seconds), 5))[1:]
+    float_seconds = float(float_seconds)
 
-    return f'{deg}°{minutes}\'{int_sec}{float_seconds}"'
+    return f'{deg}°{minutes}\'{int_sec}{float_seconds:.3f}"'
 
 
 points = ['A', 'B', 'C', 'D', 'Mean', 'M']
@@ -109,13 +110,13 @@ transformed = PrettyTable(['Krasowskiego', 'X', 'Y', 'Z'])
 geo_krasowskiego = PrettyTable(['Geo Krasowskiego', 'Phi', 'Lambda'])
 for index, val in enumerate([A, B, C, D, Mean, M]):
     # XYZ GRS80
-    xyz_grs80.add_row([points[index], phi_lambda_to_xyz(val)[0], phi_lambda_to_xyz(val)[1], phi_lambda_to_xyz(val)[2]])
+    xyz_grs80.add_row([points[index], f"{phi_lambda_to_xyz(val)[0]:.3f}", f"{phi_lambda_to_xyz(val)[1]:.3f}", f"{phi_lambda_to_xyz(val)[2]:.3f}"])
 
     # XYZ Krasowskiego
     xyz = phi_lambda_to_xyz(val)
     kraso = transformacja(xyz)
     transposed = list(np.transpose(kraso)[0])
-    transformed.add_row([points[index], transposed[0], transposed[1], transposed[2]])
+    transformed.add_row([points[index], f"{transposed[0]:.3f}", f"{transposed[1]:.3f}", f"{transposed[2]:.3f}"])
 
     # Geo Krasowskiego
     phi, lam = hirvionen(transposed)
