@@ -45,7 +45,7 @@ def hirvionen(xyz: list):
         # krok 4
         phi_new = np.arctan((z/r*((1-e2_k)*(N / (N + h)))**-1))
 
-        if np.fabs(phi_new - phi) >= epsilon:
+        if phi_new - phi >= epsilon:
             phi = phi_new
         else:
             break
@@ -59,7 +59,7 @@ def hirvionen(xyz: list):
     y = (N+h) * np.cos(phi) * np.sin(lam)
     z = (N*(1 - e2_k) + h) * np.sin(phi)
 
-    return np.degrees(phi), np.degrees(lam)
+    return np.degrees(phi), np.degrees(lam), h
 
 
 def transformacja(xyz: list):
@@ -100,14 +100,15 @@ def real_degrees(degrees):
     int_sec = f"{int(seconds):02d}"
     float_seconds = str(round(seconds-int(seconds), 5))[1:]
     float_seconds = float(float_seconds)
+    float_seconds = f"{float_seconds:.5f}"[1:]
 
-    return f'{deg}°{minutes}\'{int_sec}{float_seconds:.5f}"'
+    return f'{deg}°{minutes}\'{int_sec}{float_seconds}"'
 
 
 points = ['A', 'B', 'C', 'D', 'Mean', 'M']
 xyz_grs80 = PrettyTable(['GRS80', 'X', 'Y', 'Z'])
 transformed = PrettyTable(['Krasowskiego', 'X', 'Y', 'Z'])
-geo_krasowskiego = PrettyTable(['Geo Krasowskiego', 'Phi', 'Lambda'])
+geo_krasowskiego = PrettyTable(['Geo Krasowskiego', 'Phi', 'Lambda', 'Wysokosc'])
 for index, val in enumerate([A, B, C, D, Mean, M]):
     # XYZ GRS80
     xyz_grs80.add_row([points[index], f"{phi_lambda_to_xyz(val)[0]:.3f}", f"{phi_lambda_to_xyz(val)[1]:.3f}", f"{phi_lambda_to_xyz(val)[2]:.3f}"])
@@ -119,8 +120,8 @@ for index, val in enumerate([A, B, C, D, Mean, M]):
     transformed.add_row([points[index], f"{transposed[0]:.3f}", f"{transposed[1]:.3f}", f"{transposed[2]:.3f}"])
 
     # Geo Krasowskiego
-    phi, lam = hirvionen(transposed)
-    geo_krasowskiego.add_row([points[index], real_degrees(phi), real_degrees(lam)])
+    phi, lam, h = hirvionen(transposed)
+    geo_krasowskiego.add_row([points[index], real_degrees(phi), real_degrees(lam), f"{h:.3f}"])
 
 
 print(xyz_grs80)
