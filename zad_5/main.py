@@ -101,7 +101,7 @@ def real_degrees(degrees):
     float_seconds = str(round(seconds-int(seconds), 5))[1:]
     float_seconds = float(float_seconds)
 
-    return f'{deg}°{minutes}\'{int_sec}{float_seconds:.3f}"'
+    return f'{deg}°{minutes}\'{int_sec}{float_seconds:.5f}"'
 
 
 points = ['A', 'B', 'C', 'D', 'Mean', 'M']
